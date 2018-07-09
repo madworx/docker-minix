@@ -1,8 +1,9 @@
+sudo: required
 
 language: c
 
 before_install:
-  - apt-get install build-essential curl git zlibc zlib1g zlib1g-dev g++
+  - sudo apt-get install build-essential curl git zlibc zlib1g zlib1g-dev g++
 
 script:
   - mkdir minix
