@@ -1,0 +1,12 @@
+
+language: c
+
+before_install:
+  - apt-get install build-essential curl git zlibc zlib1g zlib1g-dev g++
+
+script:
+  - mkdir minix
+  - cd minix
+  - git clone --depth=2 git://git.minix3.org/minix src
+  - cd src
+  - export JOBS=4 ; ./releasetools/x86_ramimage.sh
