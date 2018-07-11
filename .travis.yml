@@ -1,13 +1,17 @@
 sudo: required
 
-language: c
+language: perl
+
+services:
+  - docker
 
 before_install:
-  - sudo apt-get install build-essential curl git zlibc zlib1g zlib1g-dev g++
+   - if [[ "${TRAVIS_BRANCH}" == "master" ]] ; then
+       echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin ;
+     fi
+
+install:
+  - cpanm --quiet --installdeps --notest .
 
 script:
-  - mkdir minix
-  - cd minix
-  - git clone --depth=2 git://git.minix3.org/minix src
-  - cd src
-  - export JOBS=4 ; ./releasetools/x86_ramimage.sh
+  - make && make push
