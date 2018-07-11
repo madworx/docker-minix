@@ -4,6 +4,9 @@ set timeout 120
 
 spawn qemu-system-x86_64 -nographic -boot d -serial mon:stdio -cdrom /minix.iso -drive format=raw,file=minix.img
 
+#
+# Login and run installer.
+#
 expect "login: " { send "root\n" }
 expect "\n# " { send "setup\n" }
 expect "\n:" { send "\n" }
@@ -16,17 +19,30 @@ expect "How big do you want your /home" { send "\n" }
 expect "Ok? " { send "\n" }
 expect "Block size in kilobytes?" { send "\n" }
 
+expect "Remaining: "
+puts "\n\nExpect: Found start of 'installing files' section. Turning off output.\n\n"
+log_user 0
 set timeout 900
 
-expect "Ethernet card? " { send "\n" }
-
+expect "Done."
+log_user 1
+puts "\n\nExpect: Installer copied all files. Turning on output again.\n\n"
 set timeout 60
 
+expect "Ethernet card? " { send "\n" }
 expect "Configure method? " { send "\n" }
 expect "# " { send "mount /dev/c0d0p0s0 /mnt\n" }
+
+#
+# Patch the boot.cfg to use serial console.
+#
 expect "# " { send "sed -e 's#^\\(menu=Start.*\\)#\\1 console=tty00#' /mnt/boot.cfg > /mnt/boot.cfg.new\n" }
 expect "# " { send "mv /mnt/boot.cfg.new /mnt/boot.cfg\n" }
 expect "# " { send "umount /mnt\n" }
+
+#
+# Shutdown
+#
 expect "# " { send "poweroff\n" }
 expect eof
 
@@ -40,6 +56,7 @@ set timeout 120
 
 spawn qemu-system-x86_64 -nographic -boot c -serial mon:stdio -drive format=raw,file=minix.img
 
+# Install OpenSSH client + server.
 expect "login: " { send "root\n" }
 expect "# " { send "pkgin -y install openssh\n" }
 expect "# " { send "poweroff\n" }
