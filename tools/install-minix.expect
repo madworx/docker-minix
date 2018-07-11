@@ -1,0 +1,46 @@
+#!/usr/bin/expect
+
+set timeout 120
+
+spawn qemu-system-x86_64 -nographic -boot d -serial mon:stdio -cdrom /minix.iso -drive format=raw,file=minix.img
+
+expect "login: " { send "root\n" }
+expect "\n# " { send "setup\n" }
+expect "\n:" { send "\n" }
+expect "Keyboard type?" { send "\n" }
+expect "Press ENTER for automatic mode" { send "\n" }
+expect "Enter the disk number to use:" { send "\n" }
+expect "Enter the region number to use" { send "\n" }
+expect "Are you sure you want to continue?" { send "yes\n" }
+expect "How big do you want your /home" { send "\n" }
+expect "Ok? " { send "\n" }
+expect "Block size in kilobytes?" { send "\n" }
+
+set timeout 900
+
+expect "Ethernet card? " { send "\n" }
+
+set timeout 60
+
+expect "Configure method? " { send "\n" }
+expect "# " { send "mount /dev/c0d0p0s0 /mnt\n" }
+expect "# " { send "sed -e 's#^\\(menu=Start.*\\)#\\1 console=tty00#' /mnt/boot.cfg > /mnt/boot.cfg.new\n" }
+expect "# " { send "mv /mnt/boot.cfg.new /mnt/boot.cfg\n" }
+expect "# " { send "umount /mnt\n" }
+expect "# " { send "poweroff\n" }
+expect eof
+
+set timeout 120
+
+#
+# We'll install OpenSSH by booting Minix again, instead of re-mounting
+# all partitions and starting networking manually. Hopefully this is a
+# bit more robust approach.
+#
+
+spawn qemu-system-x86_64 -nographic -boot c -serial mon:stdio -drive format=raw,file=minix.img
+
+expect "login: " { send "root\n" }
+expect "# " { send "pkgin -y install openssh\n" }
+expect "# " { send "poweroff\n" }
+expect eof
