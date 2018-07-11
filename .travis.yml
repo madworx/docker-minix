@@ -4,11 +4,14 @@ language: perl
 
 services:
   - docker
-  
+
+before_install:
+   - if [[ "${TRAVIS_BRANCH}" == "master" ]] ; then
+       echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin ;
+     fi
+
 install:
   - cpanm --quiet --installdeps --notest .
 
 script:
-  - make
-
-
+  - make && make push
