@@ -1,8 +1,13 @@
 sudo: required
 
+language: perl
+
 services:
   - docker
   
+install:
+  - cpanm --quiet --installdeps --notest .
+
 script:
   - make
 
