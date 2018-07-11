@@ -25,6 +25,7 @@ log_user 0
 set timeout 900
 
 expect "Done."
+expect "Done."
 log_user 1
 puts "\n\nExpect: Installer copied all files. Turning on output again.\n\n"
 set timeout 60
