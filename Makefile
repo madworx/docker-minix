@@ -1,7 +1,6 @@
 all: build
 
 test:
-	shellcheck -s ksh tools/*.sh
 	perl -Mstrict -cw tools/*.pl
 	perlcritic --harsh tools/*.pl
 
