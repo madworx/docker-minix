@@ -17,4 +17,4 @@ script:
 after_success:
   - is_travis_master_push &&
     dockerhub_push_image madworx/minix &&
-    dockerhub_set_description madworx/debian-archive README.md
+    dockerhub_set_description madworx/minix README.md
