@@ -6,12 +6,15 @@ services:
   - docker
 
 before_install:
-   - if [[ "${TRAVIS_BRANCH}" == "master" ]] ; then
-       echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin ;
-     fi
+   - source <(curl https://raw.githubusercontent.com/madworx/cd-ci-glue/master/src/cd-ci-glue.bash)
 
 install:
   - cpanm --quiet --installdeps --notest .
 
 script:
-  - make && make push
+  - make
+
+after_success:
+  - is_travis_master_push &&
+    dockerhub_push_image madworx/minix &&
+    dockerhub_set_description madworx/debian-archive README.md

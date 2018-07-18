@@ -1,5 +1,15 @@
 #!/usr/bin/env perl
 
+#
+# Patch  the official  MINIX3 ISO  installer image  to use  the serial
+# console.
+#
+# This script does not really understand the ISO9660 format and simply
+# does a  pattern search in the  file for the beginning  and ending of
+# well-known markers ($marker_start, $marker_end, below)
+#
+# Blame (most) bugs on: Martin Kjellstrand <martin.kjellstrand@madworx.se>
+
 use strict;
 use warnings;
 use Carp qw( croak );
