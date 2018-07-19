@@ -3,11 +3,15 @@ FROM madworx/qemu AS build
 MAINTAINER Martin Kjellstrand [https://github.com/madworx]
 
 ARG ISO_URL='http://download.minix3.org/iso/minix_R3.3.0-588a35b.iso.bz2'
+ARG ISO_HASH='3234ffcebfb2a28069cf3def41c95dec'
 ARG DISK_SIZE=10G
+
+SHELL [ "/bin/bash", "-c" ]
 
 RUN qemu-img create -f qcow2 /minix.qcow2 ${DISK_SIZE}
 
-RUN curl "${ISO_URL}" | bzip2 -cd > minix.iso
+RUN curl "${ISO_URL}" | tee >(bzip2 -cd > minix.iso) | md5sum -c <(echo "${ISO_HASH}  -")
+
 COPY tools/patch-image.pl /
 RUN apk add --no-cache perl expect
 RUN ./patch-image.pl minix.iso
