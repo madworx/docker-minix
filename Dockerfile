@@ -2,9 +2,12 @@ FROM madworx/qemu AS build
 
 MAINTAINER Martin Kjellstrand [https://github.com/madworx]
 
-RUN qemu-img create -f qcow2 /minix.qcow2 1G
+ARG ISO_URL='http://download.minix3.org/iso/minix_R3.3.0-588a35b.iso.bz2'
+ARG DISK_SIZE=10G
 
-RUN curl 'http://download.minix3.org/iso/minix_R3.3.0-588a35b.iso.bz2' | bzip2 -cd > minix.iso
+RUN qemu-img create -f qcow2 /minix.qcow2 ${DISK_SIZE}
+
+RUN curl "${ISO_URL}" | bzip2 -cd > minix.iso
 COPY tools/patch-image.pl /
 RUN apk add --no-cache perl expect
 RUN ./patch-image.pl minix.iso
@@ -25,13 +28,11 @@ COPY tools/sshexec.sh            /target/usr/bin/sshexec
 COPY tools/docker-entrypoint.sh  /target/
 RUN cp /minix.qcow2              /target/
 RUN cp -a /root/.ssh             /target/root/
-RUN ls -lhR /target
-RUN ls -lh /
 
 FROM madworx/qemu
 ENV SYSTEM_MEMORY=512 \
     SYSTEM_CPUS=1 \
     SSH_PORT=22
+EXPOSE 22
 COPY --from=build /target /
-RUN ls -lh /
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
