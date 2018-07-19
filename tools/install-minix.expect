@@ -16,19 +16,18 @@ expect "Press ENTER for automatic mode" { send "\n" }
 expect "Enter the disk number to use:" { send "\n" }
 expect "Enter the region number to use" { send "\n" }
 expect "Are you sure you want to continue?" { send "yes\n" }
-expect "How big do you want your /home" { send "\n" }
-expect "Ok? " { send "\n" }
+expect "How big do you want your /home" { send "0\n" }
 expect "Block size in kilobytes?" { send "\n" }
 
 expect "Remaining: "
-puts "\n\nExpect: Found start of 'installing files' section. Turning off output.\n\n"
+puts "\n\nExpect: Found start of 'installing files' section. Supressing output.\n\n"
 log_user 0
 set timeout 900
 
 expect "Done."
 expect "Done."
 log_user 1
-puts "\n\nExpect: Installer copied all files. Turning on output again.\n\n"
+puts "\n\nExpect: Installer copied all files. Re-enabling output.\n\n"
 set timeout 60
 
 expect "Ethernet card? " { send "\n" }
