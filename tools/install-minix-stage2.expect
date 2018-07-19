@@ -1,0 +1,28 @@
+#!/usr/bin/expect
+
+set qemu [list qemu-system-x86_64 -nographic -serial mon:stdio -drive format=qcow2,file=/minix.qcow2]
+set timeout 120
+
+#
+# We'll install OpenSSH by booting Minix again, instead of re-mounting
+# all partitions and starting networking manually. Hopefully this is a
+# bit more robust approach.
+#
+
+spawn {*}$qemu -boot c
+
+#
+# Read the containers root user ssh key into the $pubkey variable:
+#
+set pubfile [open "/root/.ssh/id_rsa.pub" r]
+set pubkey [read $pubfile]
+close $pubfile
+
+#
+# Install  OpenSSH client  +  server  and setup  trust  to the  docker
+# containers root user ssh key:
+#
+expect "login: " { send "root\n" }
+expect "# " { send "pkgin -y install openssh\n" }
+expect "# " { send "poweroff\n" }
+expect eof

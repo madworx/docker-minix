@@ -1,3 +1,4 @@
 *.iso
-test.img
+*.qcow2
+*.img
 minix/**

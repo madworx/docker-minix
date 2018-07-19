@@ -1,0 +1,36 @@
+#!/usr/bin/expect
+
+set qemu [list qemu-system-x86_64 -nographic -serial mon:stdio -drive format=qcow2,file=/minix.qcow2]
+set timeout 120
+
+spawn {*}$qemu -boot c
+
+#
+# Read the containers root user ssh key into the $pubkey variable:
+#
+set pubfile [open "/root/.ssh/id_rsa.pub" r]
+set pubkey [read $pubfile]
+close $pubfile
+
+#
+# Install  OpenSSH client  +  server  and setup  trust  to the  docker
+# containers root user ssh key:
+#
+expect "login: " { send "root\n" }
+expect "# " { send "mkdir /root/.ssh\n" }
+expect "# "
+send "echo '"
+set send_slow {10 .001}
+send -s $pubkey
+send "' >/root/.ssh/authorized_keys\n"
+
+expect "# " {
+    send "cat /usr/pkg/etc/ssh/*.pub\n"
+    log_file /tmp/pubkeys.minix
+}
+
+expect "# " {
+    log_file
+    send "poweroff\n"
+}
+expect eof

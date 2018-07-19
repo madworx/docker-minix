@@ -1,8 +1,9 @@
 #!/usr/bin/expect
 
+set qemu [list qemu-system-x86_64 -nographic -serial mon:stdio -drive format=qcow2,file=/minix.qcow2]
 set timeout 120
 
-spawn qemu-system-x86_64 -nographic -boot d -serial mon:stdio -cdrom /minix.iso -drive format=raw,file=minix.img
+spawn {*}$qemu -boot d -cdrom /minix.iso
 
 #
 # Login and run installer.
@@ -44,21 +45,5 @@ expect "# " { send "umount /mnt\n" }
 #
 # Shutdown
 #
-expect "# " { send "poweroff\n" }
-expect eof
-
-set timeout 120
-
-#
-# We'll install OpenSSH by booting Minix again, instead of re-mounting
-# all partitions and starting networking manually. Hopefully this is a
-# bit more robust approach.
-#
-
-spawn qemu-system-x86_64 -nographic -boot c -serial mon:stdio -drive format=raw,file=minix.img
-
-# Install OpenSSH client + server.
-expect "login: " { send "root\n" }
-expect "# " { send "pkgin -y install openssh\n" }
 expect "# " { send "poweroff\n" }
 expect eof
