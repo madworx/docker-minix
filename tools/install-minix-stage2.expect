@@ -12,13 +12,6 @@ set timeout 120
 spawn {*}$qemu -boot c
 
 #
-# Read the containers root user ssh key into the $pubkey variable:
-#
-set pubfile [open "/root/.ssh/id_rsa.pub" r]
-set pubkey [read $pubfile]
-close $pubfile
-
-#
 # Install  OpenSSH client  +  server  and setup  trust  to the  docker
 # containers root user ssh key:
 #
