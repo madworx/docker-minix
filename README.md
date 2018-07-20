@@ -2,18 +2,23 @@
 
 # docker-minix
 
-QEMU-based Docker image for Minix 3, based on the official CD-ROM ISO image installation from the Minix website.
+QEMU-based Docker image for Minix 3, based on the official CD-ROM ISO image installation from the [Minix website](https://www.minix3.org/).
+
+QEMU will use KVM acceleration, if your hardware supports it, and you're running the container in privileged mode.
 
 Available at Docker hub as [madworx/minix](https://hub.docker.com/r/madworx/minix/).
 
 ## Usage
 
+### Run a specific command in MINIX
 ```
-# Run a specific command in MINIX:
 $ docker run --rm -it madworx/minix uname -a
 Minix 192.168.76.9 3.3.0 Minix 3.3.0 (GENERIC) i386
 
-# Start in background, connect via ssh:
+```
+
+### Start in background, connect via ssh
+```
 $ docker run --rm -d --name minix madworx/minix
 $ docker exec -it minix ssh localhost
 For post-installation usage tips such as installing binary
@@ -30,4 +35,12 @@ We'd like your feedback: http://minix3.org/community/
 
 ## Source
 
-Everything is hosted on [github](https://github.com/madworx/docker-debian-archive).
+Source code is hosted on [github](https://github.com/madworx/docker-minix).
+
+## Contributions
+
+All and any contributions are welcome in form of pull requests.
+
+## Author
+
+Martin Kjellstrand <martin.kjellstrand@madworx.se>
