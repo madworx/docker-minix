@@ -12,7 +12,7 @@ push:
 	docker push madworx/minix
 
 run:
-	docker run --rm -it madworx/minix
+	docker run -d --name minix --rm -it madworx/minix
 
 clean:
 	rm -f *~
