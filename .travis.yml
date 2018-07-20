@@ -20,4 +20,5 @@ after_success:
     dockerhub_set_description madworx/minix README.md
 
 after_failure:
-  - ps auxww
+  - ps auxww ; cat /tmp/qemu.log
+  
