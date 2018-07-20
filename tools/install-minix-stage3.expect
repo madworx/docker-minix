@@ -3,6 +3,12 @@
 set qemu [list qemu-system-x86_64 -d int,pcall,cpu_reset,unimp,guest_errors -D /tmp/qemu.log -nographic -serial mon:stdio -drive format=qcow2,file=/minix.qcow2]
 set timeout 120
 
+expect_after {
+    timeout {
+        exit 1
+    }
+}
+
 spawn {*}$qemu -boot c
 
 #
