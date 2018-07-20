@@ -11,20 +11,21 @@ SHELL [ "/bin/bash", "-c" ]
 RUN qemu-img create -f qcow2 /minix.qcow2 ${DISK_SIZE}
 
 RUN curl "${ISO_URL}" | tee >(bzip2 -cd > minix.iso) | md5sum -c <(echo "${ISO_HASH}  -")
+#COPY minix.iso /
 
-COPY tools/patch-image.pl /
+COPY tools/patch-image.pl tools/report-error.sh /
 RUN apk add --no-cache perl expect
 RUN ./patch-image.pl minix.iso
 
 COPY tools/install-minix.expect /
-RUN /install-minix.expect
+RUN /install-minix.expect || /report-error.sh
 
 RUN ssh-keygen -f /root/.ssh/id_rsa -N ''
 COPY tools/install-minix-stage2.expect /
-RUN /install-minix-stage2.expect
+RUN /install-minix-stage2.expect || /report-error.sh
 
 COPY tools/install-minix-stage3.expect /
-RUN /install-minix-stage3.expect
+RUN /install-minix-stage3.expect || /report-error.sh
 RUN sed 's#^#localhost,127.0.0.1 #' /tmp/pubkeys.minix > /root/.ssh/known_hosts
 
 RUN mkdir -p /target/root

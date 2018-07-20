@@ -1,6 +1,6 @@
 #!/usr/bin/expect
 
-set qemu [list qemu-system-x86_64 -d int,pcall,cpu_reset,unimp,guest_errors -D /tmp/qemu.log -nographic -serial mon:stdio -drive format=qcow2,file=/minix.qcow2]
+set qemu [list qemu-system-x86_64 -d cpu_reset,unimp,guest_errors -D /tmp/qemu.log -nographic -serial mon:stdio -drive format=qcow2,file=/minix.qcow2]
 set timeout 120
 
 exp_internal -f /tmp/expect.log 0
@@ -9,6 +9,8 @@ spawn {*}$qemu -boot c
 
 expect_after {
     timeout {
+        log_user 1
+        puts "\n\n\n####### FAILED due to timeout."
         exit 1
     }
 }
