@@ -17,13 +17,8 @@ use Carp qw( croak );
 my $marker_start = "banner=Welcome";
 my $marker_end   = "# This space intentionally left blank - leave to appease bootloader!\n\0";
 
-my $BUFSIZE=3;
-my $BLOCKSIZE=16384;
-
-my $bufhead   = 0;
-my @buffer    = ();
-my $pos_start = -1;
-my $pos_end   = -1;
+my $BUFSIZE=3;       # Number of $BLOCKSIZE blocks the complete buffer will contain.
+my $BLOCKSIZE=16384; # Read up to this many bytes at a time
 
 my $iso_fh;
 
@@ -32,8 +27,13 @@ patch_iso( $iso_fh );
 close $iso_fh;
 
 sub patch_iso {
-    my $fh = shift;
-    my $break     = 0;
+    my $buffer_head_offset = 0; # Byte offset into the .ISO image, where the start of the buffer is.
+    my @buffer    = (); # Array of <= $BUFSIZE byte elements.
+    my $pos_start = -1; # Byte offset in ISO image of <start marker>.
+    my $pos_end   = -1; # Byte offset in ISO image of end of <end marker>.
+
+    my $fh     = shift;
+    my $break  = 0;
     do {
         my $buf;
         read( $fh, $buf, $BLOCKSIZE );
@@ -42,17 +42,17 @@ sub patch_iso {
         
         if ( $pos_start == -1 ) {
             if ( index( $fullbuf, $marker_start ) != -1 ) {
-                $pos_start = (index($fullbuf,$marker_start) + $bufhead);
+                $pos_start = (index($fullbuf,$marker_start) + $buffer_head_offset);
             }
         } else {
             if ( index( $fullbuf, $marker_end ) != -1 ) {
-                $pos_end = (index($fullbuf,$marker_end) + $bufhead) + (length $marker_end) - 1;
+                $pos_end = (index($fullbuf,$marker_end) + $buffer_head_offset) + (length $marker_end) - 1;
                 $break = 1;
             }
         }
         
         while ( scalar @buffer > $BUFSIZE ) {
-            $bufhead += length shift @buffer;
+            $buffer_head_offset += length shift @buffer;
         }
         
         croak "Error: Read until EOF of image without finding start or ending marker." 
@@ -67,7 +67,7 @@ sub patch_iso {
         croak "read wrong number of bytes from iso."
     }
     
-    #print "Dumping contents:\n";
+    #print "Dumping original contents:\n";
     #print "====================================================\n";
     #print $boot_conf;
     #print "====================================================\n";
