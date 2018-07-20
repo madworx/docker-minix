@@ -28,9 +28,9 @@ RUN /install-minix-stage3.expect
 RUN sed 's#^#localhost,127.0.0.1 #' /tmp/pubkeys.minix > /root/.ssh/known_hosts
 
 RUN mkdir -p /target/root
+RUN cp /minix.qcow2              /target/
 COPY tools/sshexec.sh            /target/usr/bin/sshexec
 COPY tools/docker-entrypoint.sh  /target/
-RUN cp /minix.qcow2              /target/
 RUN cp -a /root/.ssh             /target/root/
 
 FROM madworx/qemu

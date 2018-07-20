@@ -32,8 +32,7 @@ fi
 # shutdown command there.
 #
 trap "{ echo \"Shutting down gracefully...\" 1>&2 ; \
-        echo -e \"system_powerdown\\n\\n\" | nc localhost 4444 ; \
-        wait ; \
+        ssh root@localhost /sbin/poweroff -d ; wait ; \
         echo \"Will now exit entrypoint.\" 1>&2 ; \
         exit 0 ; }" TERM
 
