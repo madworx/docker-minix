@@ -3,12 +3,7 @@
 set qemu [list qemu-system-x86_64 -d int,pcall,cpu_reset,unimp,guest_errors -D /tmp/qemu.log -nographic -serial mon:stdio -drive format=qcow2,file=/minix.qcow2]
 set timeout 120
 
-expect_after {
-    timeout {
-        exit 1
-    }
-}
-
+exp_internal -f /tmp/expect.log 0
 #
 # We'll install OpenSSH by booting Minix again, instead of re-mounting
 # all partitions and starting networking manually. Hopefully this is a
@@ -16,6 +11,12 @@ expect_after {
 #
 
 spawn {*}$qemu -boot c
+
+expect_after {
+    timeout {
+        exit 1
+    }
+}
 
 #
 # Install  OpenSSH client  +  server  and setup  trust  to the  docker
