@@ -33,5 +33,5 @@ expect "login: " { send "root\n" }
 
 set timeout 120
 expect "# " { send "pkgin -y install openssh\n" }
-expect "# " { send "poweroff\n" }
+expect "# " { send "poweroff -d\n" }
 expect eof

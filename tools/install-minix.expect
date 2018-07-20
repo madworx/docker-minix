@@ -56,5 +56,5 @@ expect "# " { send "umount /mnt\n" }
 #
 # Shutdown
 #
-expect "# " { send "poweroff\n" }
+expect "# " { send "poweroff -d\n" }
 expect eof
