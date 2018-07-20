@@ -43,6 +43,6 @@ expect "# " {
 
 expect "# " {
     log_file
-    send "poweroff\n"
+    send "poweroff -d\n"
 }
 expect eof
