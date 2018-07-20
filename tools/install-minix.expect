@@ -29,6 +29,7 @@ expect "Are you sure you want to continue?" { send "yes\n" }
 expect "How big do you want your /home" { send "0\n" }
 expect "Block size in kilobytes?" { send "\n" }
 
+set timeout 500
 expect "Remaining: "
 puts "\n\nExpect: Found start of 'installing files' section. Supressing output.\n\n"
 log_user 0
