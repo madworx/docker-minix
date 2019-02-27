@@ -6,7 +6,8 @@ test: build
 	docker run --rm madworx/minix uname -a
 
 build:
-	docker build -t madworx/minix .
+	export VCS_REF="$$(git rev-parse --short HEAD)" ; \
+	docker build -t madworx/minix --build-arg=VCS_REF .
 
 push:
 	docker push madworx/minix

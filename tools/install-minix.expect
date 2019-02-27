@@ -40,9 +40,9 @@ expect "Saving random data.."
 log_user 1
 puts "\n\nExpect: Installer copied all files. Re-enabling output.\n\n"
 set timeout 300
-
-expect "Ethernet card? " { send "\n" }
-expect "Configure method? " { send "\n" }
+expect "Interface choice? " { send "\n" }
+expect "Configuration choice? " { send "\n" }
+expect "Menu choice? " { send "\n" }
 
 expect "# " { send "mount /dev/c0d0p0s0 /mnt\n" }
 

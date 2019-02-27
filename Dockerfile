@@ -2,16 +2,21 @@ FROM madworx/qemu AS build
 
 MAINTAINER Martin Kjellstrand [https://github.com/madworx]
 
-ARG ISO_URL='http://download.minix3.org/iso/minix_R3.3.0-588a35b.iso.bz2'
-ARG ISO_HASH='3234ffcebfb2a28069cf3def41c95dec'
+ARG VCS_REF
+LABEL org.label-schema.vcs-url="https://github.com/madworx/docker-minix/" \
+      org.label-schema.vcs-ref=${VCS_REF} \
+      maintainer="Martin Kjellstrand [https://www.github.com/madworx]"
+      
+ARG ISO_URL='http://download.minix3.org/iso/snapshot/minix_R3.4.0rc6-d5e4fc0.iso.bz2'
+ARG ISO_HASH='fbf5bc1dad5ce6992412cb5c4c7c061d'
 ARG DISK_SIZE=10G
 
 SHELL [ "/bin/bash", "-c" ]
 
 RUN qemu-img create -f qcow2 /minix.qcow2 ${DISK_SIZE}
 
-RUN curl "${ISO_URL}" | tee >(bzip2 -cd > minix.iso) | md5sum -c <(echo "${ISO_HASH}  -")
-
+#RUN curl "${ISO_URL}" | tee >(bzip2 -cd > minix.iso) | md5sum -c <(echo "${ISO_HASH}  -")
+COPY iso/minix_R3.4.0rc6-d5e4fc0.iso.orig /minix.iso
 COPY tools/patch-image.pl tools/report-error.sh /
 RUN apk add --no-cache perl expect
 RUN ./patch-image.pl minix.iso
