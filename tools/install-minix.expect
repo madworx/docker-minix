@@ -21,7 +21,7 @@ expect_after {
 expect "login: " { send "root\n" }
 
 set timeout 120
-expect "\n# " { send "setup\n" }
+expect "# " { send "setup\n" }
 expect "\n:" { send "\n" }
 expect "Keyboard type?" { send "\n" }
 expect "Press ENTER for automatic mode" { send "\n" }
@@ -31,19 +31,19 @@ expect "Are you sure you want to continue?" { send "yes\n" }
 expect "How big do you want your /home" { send "0\n" }
 expect "Block size in kilobytes?" { send "\n" }
 
-set timeout 500
-expect "Remaining: "
+set timeout 3600
+expect "All files will now be copied to your hard disk."
 puts "\n\nExpect: Found start of 'installing files' section. Supressing output.\n\n"
 log_user 0
 
-expect "Done."
-expect "Done."
+expect "Saving random data.."
 log_user 1
 puts "\n\nExpect: Installer copied all files. Re-enabling output.\n\n"
-set timeout 60
+set timeout 300
 
 expect "Ethernet card? " { send "\n" }
 expect "Configure method? " { send "\n" }
+
 expect "# " { send "mount /dev/c0d0p0s0 /mnt\n" }
 
 #
