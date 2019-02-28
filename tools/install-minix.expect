@@ -31,14 +31,35 @@ expect "Are you sure you want to continue?" { send "yes\n" }
 expect "How big do you want your /home" { send "0\n" }
 expect "Block size in kilobytes?" { send "\n" }
 
-set timeout 3600
 expect "All files will now be copied to your hard disk."
-puts "\n\nExpect: Found start of 'installing files' section. Supressing output.\n\n"
+puts "\n\nExpect: Found start of 'installing files' section. Supressing normal output."
 log_user 0
+exp_internal 0
 
-expect "Saving random data.."
+# We allow each set to take up to 10xTMOUT of time.
+set waitcount 10
+expect {
+    "Saving random data.." { }
+    -re "Extracting (.*)\[.]{3}" {
+        set bundle $expect_out(1,string)
+        puts "MINIX is working on extracting set: $bundle."
+        set waitcount 10
+        exp_continue
+    }
+    timeout  {
+        puts "MINIX is still working on extracting this set."
+        incr waitcount -1
+        if {$waitcount == 0} {
+                puts "Set extraction timed out!"
+        } else {
+                exp_continue
+        }
+    }
+}
+
 log_user 1
 puts "\n\nExpect: Installer copied all files. Re-enabling output.\n\n"
+exp_internal -f /tmp/expect.log 0
 set timeout 300
 expect "Interface choice? " { send "\n" }
 expect "Configuration choice? " { send "\n" }
