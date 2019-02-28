@@ -5,6 +5,10 @@ MAINTAINER Martin Kjellstrand [https://github.com/madworx]
 ARG ISO_URL='http://download.minix3.org/iso/minix_R3.3.0-588a35b.iso.bz2'
 ARG ISO_HASH='3234ffcebfb2a28069cf3def41c95dec'
 ARG DISK_SIZE=10G
+ARG VCS_REF
+LABEL org.label-schema.vcs-url="https://github.com/madworx/docker-minix/" \
+      org.label-schema.vcs-ref=${VCS_REF} \
+      maintainer="Martin Kjellstrand [https://www.github.com/madworx]"
 
 SHELL [ "/bin/bash", "-c" ]
 
