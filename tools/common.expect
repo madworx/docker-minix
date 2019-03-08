@@ -1,0 +1,41 @@
+#puts $env(HTTP_PROXY)
+#exit
+
+#if { [info exists ::env(DISPLAY) ] } {
+#       package require Tk
+#}
+
+#foreach i {http_proxy HTTP_PROXY https_proxy HTTPS_PROXY} {
+#    if { [info exists ::env($i) ] } {
+#        puts $i
+#    }
+#}
+#exit
+
+set qemu [list qemu-system-x86_64 -d cpu_reset,unimp,guest_errors -D /tmp/qemu.log -nographic -serial mon:stdio -drive format=qcow2,file=/minix.qcow2]
+set timeout 300
+
+set ver [lindex $argv 0]
+
+switch -glob $ver {
+    3.3.*		{ set family "THREEPOINTTHREE" }
+    3.4.*		{ set family "THREEPOINTFOUR"  }
+    default	   { error "Unsupported version $ver." }
+}
+
+exp_internal -f /tmp/expect.log 0
+
+spawn {*}$qemu {*}$bootvars
+
+expect_after {
+    timeout {
+        set fd "/tmp/expect.log"
+        set fp [open "$fd" r]
+        set data [read $fp]
+        puts "FAILED due to timeout. Dumping debug log:"
+        foreach line $data {
+            puts "$line\r"
+        }
+        exit 1
+    }
+}
