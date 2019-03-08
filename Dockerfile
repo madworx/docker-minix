@@ -2,6 +2,7 @@ FROM madworx/qemu AS build
 
 MAINTAINER Martin Kjellstrand [https://github.com/madworx]
 
+ARG VER=3.4.0rc6
 ARG ISO_URL='http://download.minix3.org/iso/snapshot/minix_R3.4.0rc6-d5e4fc0.iso.bz2'
 ARG ISO_HASH='fbf5bc1dad5ce6992412cb5c4c7c061d'
 ARG DISK_SIZE=10G
