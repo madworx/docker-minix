@@ -49,9 +49,15 @@ log_user 1
 puts "\n\nExpect: Installer copied all files. Re-enabling output.\n\n"
 exp_internal -f /tmp/expect.log 0
 set timeout 300
-expect "Interface choice? " { send "\n" }
-expect "Configuration choice? " { send "\n" }
-expect "Menu choice? " { send "\n" }
+
+if { $family eq "THREEPOINTTHREE" } {
+  expect "Ethernet card? " { send "\n" }
+  expect "Configure method? " { send "\n" }
+} elseif { $family eq "THREEPOINTFOUR" } {
+  expect "Interface choice? " { send "\n" }
+  expect "Configuration choice? " { send "\n" }
+  expect "Menu choice? " { send "\n" }
+}
 
 expect "# " { send "mount /dev/c0d0p0s0 /mnt\n" }
 

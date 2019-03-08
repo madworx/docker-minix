@@ -22,14 +22,14 @@ RUN apk add --no-cache perl expect
 RUN ./patch-image.pl minix.iso
 
 COPY tools/install-minix.expect /
-RUN /install-minix.expect || /report-error.sh
+RUN /install-minix.expect ${VER} || /report-error.sh
 
 RUN ssh-keygen -f /root/.ssh/id_rsa -N ''
 COPY tools/install-minix-stage2.expect /
-RUN /install-minix-stage2.expect || /report-error.sh
+RUN /install-minix-stage2.expect ${VER} || /report-error.sh
 
 COPY tools/install-minix-stage3.expect /
-RUN /install-minix-stage3.expect || /report-error.sh
+RUN /install-minix-stage3.expect ${VER} || /report-error.sh
 RUN sed 's#^#localhost,127.0.0.1 #' /tmp/pubkeys.minix > /root/.ssh/known_hosts
 
 RUN mkdir -p /target/root
