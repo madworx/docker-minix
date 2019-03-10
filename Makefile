@@ -2,9 +2,11 @@ MINIX_VERSION:= ${MINIX_VERSION}
 
 all: test
 
-test: build
+pre-flight-tests:
 	perl -Mstrict -cw tools/*.pl
 	perlcritic --harsh tools/*.pl
+
+test: pre-flight-tests build
 	docker run --rm madworx/minix:build uname -a
 
 build:
