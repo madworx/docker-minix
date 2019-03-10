@@ -17,7 +17,7 @@ RUN qemu-img create -f qcow2 /minix.qcow2 ${DISK_SIZE}
 
 RUN curl "${ISO_URL}" | tee >(bzip2 -cd > minix.iso) | md5sum -c <(echo "${ISO_HASH}  -")
 
-COPY tools/patch-image.pl tools/report-error.sh /
+COPY tools/patch-image.pl tools/report-error.sh tools/common.expect /
 RUN apk add --no-cache perl expect
 RUN ./patch-image.pl minix.iso
 
