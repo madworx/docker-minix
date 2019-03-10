@@ -6,12 +6,7 @@ source common.expect
 # We'll install OpenSSH by booting Minix again, instead of re-mounting
 # all partitions and starting networking manually. Hopefully this is a
 # bit more robust approach.
-#
 
-#
-# Install  OpenSSH client  +  server  and setup  trust  to the  docker
-# containers root user ssh key:
-#
 expect "login: " { send "root\n" }
 
 set timeout 120

@@ -3,32 +3,34 @@
 set bootvars "-boot c"
 source common.expect
 
-#
-# Read the containers root user ssh key into the $pubkey variable:
-#
+# Read the containers `root` user SSH pubkey into the $pubkey variable:
 set pubfile [open "/root/.ssh/id_rsa.pub" r]
 set pubkey [read $pubfile]
 close $pubfile
 
-#
 # Install  OpenSSH client  +  server  and setup  trust  to the  docker
-# containers root user ssh key:
-#
+# container `root` user SSH key:
 expect "login: " { send "root\n" }
 
 set timeout 30
 expect "# " { send "mkdir /root/.ssh\n" }
+
+# Write our generated SSH pubkey into the target system file
+# `~root/.ssh/authorized_keys`.
 expect "# "
 send "echo '"
 set send_slow {10 .001}
 send -s $pubkey
 send "' >/root/.ssh/authorized_keys\n"
 
+# Read the target system host keys and write them into
+# the host system `/tmp/pubkeys.minix` file.
 expect "# " {
     send "cat /usr/pkg/etc/ssh/*.pub\n"
     log_file /tmp/pubkeys.minix
 }
 
+# Shutdown target.
 expect "# " {
     log_file
     send "poweroff -d\n"
