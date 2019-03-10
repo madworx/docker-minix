@@ -1,3 +1,10 @@
+env:
+  matrix:
+    - MINIX_VERSION=3.3.0
+    - MINIX_VERSION=3.4.0rc6
+  global:
+    - PATH=$HOME/.local/bin:$PATH
+
 sudo: required
 
 language: perl
@@ -6,7 +13,7 @@ services:
   - docker
 
 before_install:
-   - source <(curl https://raw.githubusercontent.com/madworx/cd-ci-glue/master/src/cd-ci-glue.bash)
+  - source <(curl https://raw.githubusercontent.com/madworx/cd-ci-glue/master/src/cd-ci-glue.bash)
 
 install:
   - cpanm --quiet --installdeps --notest ./tools
@@ -16,9 +23,5 @@ script:
 
 after_success:
   - is_travis_master_push &&
-    dockerhub_push_image madworx/minix &&
+    dockerhub_push_image madworx/minix:${MINIX_VERSION} &&
     dockerhub_set_description madworx/minix README.md
-
-after_failure:
-  - ps auxww ; cat /tmp/qemu.log
-  

@@ -1,5 +1,10 @@
 #! /bin/bash
 
+if [ "$1" == "--version" ] ; then
+    cat /minix-version
+    exit 0
+fi
+
 # Parse command line arguments:
 QUIET=0
 if [ ! -z "$*" ] ; then

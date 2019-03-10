@@ -1,0 +1,5 @@
+Version      MD5 Checksum                       Download URL
+-----------------------------------------------------------------------------------------------------------------------
+3.3.0        3234ffcebfb2a28069cf3def41c95dec	http://download.minix3.org/iso/minix_R3.3.0-588a35b.iso.bz2
+3.4.0rc6     fbf5bc1dad5ce6992412cb5c4c7c061d   http://download.minix3.org/iso/snapshot/minix_R3.4.0rc6-d5e4fc0.iso.bz2
+
