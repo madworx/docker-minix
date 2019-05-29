@@ -9,7 +9,17 @@ source common.expect
 expect "login: " { send "root\n" }
 
 set timeout 120
-expect "# " { send "setup\n" }
+
+if { $family eq "THREEPOINTTHREE" } {
+    expect "# " { send "setup\n" }
+} elseif { $family eq "THREEPOINTFOUR" } {
+    # Patch away bloaty packages
+    expect "# " { send "sed '/^for set in /a\\
+      echo \"\$(basename \"\${set}\")\" | egrep -q \"^(minix-games|xbase|xcomp|xetc|xfont|xserver|tests|minix-tests).tgz\$\" && continue
+     ' /bin/setup > /tmp/setup.tmp \n chmod +x /tmp/setup.tmp\n" }
+    expect "# " { send "/tmp/setup.tmp\n" }
+}
+
 expect "\n:" { send "\n" }
 expect "Keyboard type?" { send "\n" }
 expect "Press ENTER for automatic mode" { send "\n" }
